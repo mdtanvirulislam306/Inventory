@@ -17,20 +17,20 @@ class User {
         }
         false
     }
-    loggedin(){
+    loggedIn(){
         return this.hasToken()
     }
     logout(){
         AppStorage.clear()
     }
     name(){
-        if(this.loggedin()){
+        if(this.loggedIn()){
             return localStorage.getItem('user')
         }
     }
 
     id(){
-        if(this.loggedin){
+        if(this.loggedIn){
             const payload =  Token.payload(localStorage.getItem('token'))
             return payload.sub
         }
