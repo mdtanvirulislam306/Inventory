@@ -84,10 +84,23 @@ export default{
             axios.post('/api/auth/login',this.form)
             .then(res=>{
                 User.responseAfterLogin(res)
+                Toast.fire({
+                    type: 'success',
+                    text: 'Do you want to continue',
+                    confirmButtonText: 'Cool'
+                    })
                 this.$router.push({name:'home'})
             })
             //.then(res=>console.log(res.data))
-            .catch(error=>console.log(error))
+            //.catch(error=>console.log(error.response.data))
+            .catch(error=>{
+                Toast.fire({
+                    type: 'warning',
+                    text: error.response.data.error,
+                    icon: 'error',
+                    confirmButtonText: 'Cool'
+                    })
+            })
         }
     }
 }

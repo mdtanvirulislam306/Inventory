@@ -15,30 +15,26 @@
                         <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
                                 <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                                    placeholder="First Name">
+                                    placeholder="First Name" v-model="form.name">
                             </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control form-control-user" id="exampleLastName"
-                                    placeholder="Last Name">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                placeholder="Email Address" v-model="form.email">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                placeholder="Email Address">
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
                                 <input type="password" class="form-control form-control-user"
-                                    id="exampleInputPassword" placeholder="Password">
+                                    id="exampleInputPassword" placeholder="Password" v-model="form.password">
                             </div>
                             <div class="col-sm-6">
                                 <input type="password" class="form-control form-control-user"
-                                    id="exampleRepeatPassword" placeholder="Repeat Password">
+                                    id="exampleRepeatPassword" placeholder="Repeat Password" v-model="form.password_confirmation">
                             </div>
                         </div>
-                        <a href="login.html" class="btn btn-primary btn-user btn-block">
+                        <button class="btn btn-primary btn-user btn-block">
                             Register Account
-                        </a>
+                        </button>
                         <hr>
                         <!-- <a href="index.html" class="btn btn-google btn-user btn-block">
                             <i class="fab fa-google fa-fw"></i> Register with Google
@@ -63,5 +59,45 @@
 </div>
 </template>
 <script>
-
+export default{
+    created(){
+        if(User.loggedIn()){
+            this.$router.push({name:'home'})
+        }
+    },
+    data(){ 
+       return{
+        form:{
+            name:null,
+            email:null,
+            password:null,
+            password_confirmation:null
+        }
+       }
+    },
+    methods:{
+        login(){
+            axios.post('/api/auth/signup',this.form)
+            .then(res=>{
+                User.responseAfterLogin(res)
+                Toast.fire({
+                    type: 'success',
+                    text: 'Successfully registered!!',
+                    confirmButtonText: 'Cool'
+                    })
+                this.$router.push({name:'home'})
+            })
+            //.then(res=>console.log(res.data))
+            //.catch(error=>console.log(error.response.data))
+            .catch(error=>{
+                Toast.fire({
+                    type: 'warning',
+                    text: error.response.data.error,
+                    icon: 'error',
+                    confirmButtonText: 'Cool'
+                    })
+            })
+        }
+    }
+}
 </script>
