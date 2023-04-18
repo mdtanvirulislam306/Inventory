@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EmployeeModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Image;
 
 class EmployeeController extends Controller
 {
@@ -31,6 +32,43 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         //
+        $validatedData = $request->validate([
+            'name' => 'required|unique:employees|max:255',
+            'email' => 'required',
+            'number' => 'required|unique:employees',
+           ]);
+   
+               if($request->photo){
+                      $position = strpos($request->photo, ';');
+                      $sub=substr($request->photo, 0 ,$position);
+                      $ext=explode('/', $sub)[1];
+                      $name=time().".".$ext;
+                      $img=Image::make($request->photo)->resize(240,200);
+                      $upload_path='backend/employee/';
+                      $image_url=$upload_path.$name;
+                      $img->save($image_url);
+   
+                      $employee = new EmployeeModel;
+                      $employee->name = $request->name;
+                      $employee->email = $request->email;
+                      $employee->phone = $request->number;
+                      $employee->address = $request->address;
+                      $employee->salary = $request->salary;
+                      $employee->nid = $request->nid;
+                      $employee->joining_date = $request->joining_date;
+                      $employee->photo =  $image_url;
+                      $employee->save();
+               }else{
+                      $employee = new EmployeeModel;
+                      $employee->name = $request->name;
+                      $employee->email = $request->email;
+                      $employee->phone = $request->number;
+                      $employee->address = $request->address;
+                      $employee->salary = $request->salary;
+                      $employee->nid = $request->nid;
+                      $employee->joining_date = $request->joining_date;
+                      $employee->save();
+               }
     }
 
     /**

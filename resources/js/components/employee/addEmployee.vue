@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid"> 
+    <div class="container"> 
             <div class="col-lg-12">
                 <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
@@ -14,45 +14,55 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <form class="user" @submit.prevent="signup">
+                                    <form class="user" @submit.prevent="addEmployee">
                         <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="text" class="form-control" id="exampleFirstName"
-                                    placeholder="First Name" v-model="form.name">
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <input type="text" class="form-control" 
+                                    placeholder="Name" v-model="form.name">
                             </div>
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="email" class="form-control" id="exampleInputEmail"
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <input type="email" class="form-control" 
                                 placeholder="Email Address" v-model="form.email">
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="text" class="form-control" id="exampleInputEmail"
-                                placeholder="Salary" v-model="form.salary">
-                            </div>
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="text" class="form-control" id="exampleInputEmail"
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <input type="text" class="form-control" 
                                 placeholder="Address" v-model="form.address">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="file" class="form-control" @change="onFileSelected">
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <input type="text" class="form-control" 
+                                placeholder="Salary" v-model="form.salary">
                             </div>
+                            
                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="date" class="form-control" v-model="form.address">
+                                <input type="text" class="form-control" 
+                                placeholder="Number" v-model="form.number">
                             </div>
                         </div>
                         <div class="form-group row">
-                           <img :src="form.photo" class="thumnail">
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <input type="file" class="form-control" @change="onFileSelected">
+                            </div>
+                            <div class="col-sm-2 mb-3 mb-sm-0">
+                                <img :src="form.photo" class="img-thumbnail" style="width: 200px;height: 200;">
+                            </div>
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="date" class="form-control" v-model="form.joining_date">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                           
+                        </div>
                         </div>
                         <button class="btn btn-primary btn-block">
-                            Register Account
+                            Add Employee
                         </button>
                         
                     </form>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
             </div>
         </div>
 </template>
@@ -70,23 +80,25 @@ export default{
             email:null,
             salary:null,
             address:null,
-            photo:null,
+            number:null,
+            photo:'https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg',
             nid:null,
             joinig_date:null
         }
        }
     },
     methods:{
-        signup(){
-            axios.post('/api/auth/signup',this.form)
+        addEmployee(){
+            axios.post('/api/employee',this.form)
             .then(res=>{
-                User.responseAfterLogin(res)
+                this.$router.push({name:'employee'})
                 Toast.fire({
                     type: 'success',
-                    text: 'Successfully registered!!',
+                    text: 'Employee successfully added',
+                    icon: 'success',
                     confirmButtonText: 'Cool'
                     })
-                this.$router.push({name:'home'})
+                
             })
             //.then(res=>console.log(res.data))
             //.catch(error=>console.log(error.response.data))
@@ -99,7 +111,24 @@ export default{
                     })
             })
         },
-        onFileSelected(){}
+        onFileSelected(e){
+            let file =  e.target.files[0]
+            if(file.size>1048785){
+                Toast.fire({
+                    type: 'warning',
+                    text: 'File size must be less than 1MB',
+                    confirmButtonText: 'Cool'
+                    })
+            }else{
+                let reader = new FileReader();
+                reader.onload = e=>{
+                    this.form.photo = e.target.result
+                    console.log(e.target.result)
+                }
+                reader.readAsDataURL(file)
+            }
+            console.log(e.target.files[0].name);
+        }
     }
 }
 </script>

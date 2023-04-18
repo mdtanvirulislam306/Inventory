@@ -5478,24 +5478,25 @@ __webpack_require__.r(__webpack_exports__);
         email: null,
         salary: null,
         address: null,
-        photo: null,
+        number: null,
+        photo: 'https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg',
         nid: null,
         joinig_date: null
       }
     };
   },
   methods: {
-    signup: function signup() {
+    addEmployee: function addEmployee() {
       var _this = this;
-      axios.post('/api/auth/signup', this.form).then(function (res) {
-        User.responseAfterLogin(res);
+      axios.post('/api/employee', this.form).then(function (res) {
+        _this.$router.push({
+          name: 'employee'
+        });
         Toast.fire({
           type: 'success',
-          text: 'Successfully registered!!',
+          text: 'Employee successfully added',
+          icon: 'success',
           confirmButtonText: 'Cool'
-        });
-        _this.$router.push({
-          name: 'home'
         });
       })
       //.then(res=>console.log(res.data))
@@ -5509,7 +5510,25 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    onFileSelected: function onFileSelected() {}
+    onFileSelected: function onFileSelected(e) {
+      var _this2 = this;
+      var file = e.target.files[0];
+      if (file.size > 1048785) {
+        Toast.fire({
+          type: 'warning',
+          text: 'File size must be less than 1MB',
+          confirmButtonText: 'Cool'
+        });
+      } else {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          _this2.form.photo = e.target.result;
+          console.log(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+      console.log(e.target.files[0].name);
+    }
   }
 });
 
@@ -6037,7 +6056,7 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "container-fluid"
+    staticClass: "container"
   }, [_c("div", {
     staticClass: "col-lg-12"
   }, [_c("div", {
@@ -6060,13 +6079,13 @@ var render = function render() {
     on: {
       submit: function submit($event) {
         $event.preventDefault();
-        return _vm.signup.apply(null, arguments);
+        return _vm.addEmployee.apply(null, arguments);
       }
     }
   }, [_c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
-    staticClass: "col-sm-6 mb-3 mb-sm-0"
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -6077,8 +6096,7 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "text",
-      id: "exampleFirstName",
-      placeholder: "First Name"
+      placeholder: "Name"
     },
     domProps: {
       value: _vm.form.name
@@ -6090,7 +6108,7 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "col-sm-6 mb-3 mb-sm-0"
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -6101,7 +6119,6 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "email",
-      id: "exampleInputEmail",
       placeholder: "Email Address"
     },
     domProps: {
@@ -6113,10 +6130,33 @@ var render = function render() {
         _vm.$set(_vm.form, "email", $event.target.value);
       }
     }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.form.address,
+      expression: "form.address"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Address"
+    },
+    domProps: {
+      value: _vm.form.address
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.form, "address", $event.target.value);
+      }
+    }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
-    staticClass: "col-sm-6 mb-3 mb-sm-0"
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -6127,7 +6167,6 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "text",
-      id: "exampleInputEmail",
       placeholder: "Salary"
     },
     domProps: {
@@ -6145,28 +6184,27 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.form.address,
-      expression: "form.address"
+      value: _vm.form.number,
+      expression: "form.number"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      id: "exampleInputEmail",
-      placeholder: "Address"
+      placeholder: "Number"
     },
     domProps: {
-      value: _vm.form.address
+      value: _vm.form.number
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.form, "address", $event.target.value);
+        _vm.$set(_vm.form, "number", $event.target.value);
       }
     }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("div", {
-    staticClass: "col-sm-6 mb-3 mb-sm-0"
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
   }, [_c("input", {
     staticClass: "form-control",
     attrs: {
@@ -6176,39 +6214,51 @@ var render = function render() {
       change: _vm.onFileSelected
     }
   })]), _vm._v(" "), _c("div", {
+    staticClass: "col-sm-2 mb-3 mb-sm-0"
+  }, [_c("img", {
+    staticClass: "img-thumbnail",
+    staticStyle: {
+      width: "200px",
+      height: "200"
+    },
+    attrs: {
+      src: _vm.form.photo
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "col-sm-6 mb-3 mb-sm-0"
   }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.form.address,
-      expression: "form.address"
+      value: _vm.form.joining_date,
+      expression: "form.joining_date"
     }],
     staticClass: "form-control",
     attrs: {
       type: "date"
     },
     domProps: {
-      value: _vm.form.address
+      value: _vm.form.joining_date
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.form, "address", $event.target.value);
+        _vm.$set(_vm.form, "joining_date", $event.target.value);
       }
     }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "form-group row"
-  }, [_c("img", {
-    staticClass: "thumnail",
-    attrs: {
-      src: _vm.form.photo
-    }
-  })]), _vm._v(" "), _c("button", {
+  })])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary btn-block"
-  }, [_vm._v("\n                        Register Account\n                    ")])])])])])]);
+  }, [_vm._v("\n                        Add Employee\n                    ")])])])])])]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-sm-6 mb-3 mb-sm-0"
+  })]);
+}];
 render._withStripped = true;
 
 
