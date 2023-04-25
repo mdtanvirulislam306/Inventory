@@ -35,9 +35,13 @@
                                 placeholder="Salary" v-model="form.salary">
                             </div>
                             
-                            <div class="col-sm-6 mb-3 mb-sm-0">
+                            <div class="col-sm-4 mb-3 mb-sm-0">
                                 <input type="text" class="form-control" 
                                 placeholder="Number" v-model="form.number">
+                            </div>
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <input type="text" class="form-control" 
+                                placeholder="NID" v-model="form.nid">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -91,7 +95,7 @@ export default{
         addEmployee(){
             axios.post('/api/employee',this.form)
             .then(res=>{
-                this.$router.push({name:'employee'})
+                this.$router.push({name:'allemployee'})
                 Toast.fire({
                     type: 'success',
                     text: 'Employee successfully added',

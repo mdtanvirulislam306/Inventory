@@ -14,7 +14,37 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    
+                                    <label for="">Search</label>
+                                    <input type="text" v-model="searchTerm">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Image</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Number</th>
+                                                <th>Address</th>
+                                                <th>NID</th>
+                                                <th>Joining Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="employee in searchData" :key="employee.id">
+                                                <td><img :src="employee.photo" alt="employee photo"></td>
+                                                <td>{{ employee.name }}</td>
+                                                <td>{{ employee.email }}</td>
+                                                <td>{{ employee.number }}</td>
+                                                <td>{{ employee.address }}</td>
+                                                <td>{{ employee.nid }}</td>
+                                                <td>{{ employee.joining_date }}</td>
+                                                <td>
+                                                    <button class="btn btn-info" >Edit</button>
+                                                    <button @click="deleteEmployee(employee.id)" class="btn btn-danger" >Delete</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
             </div>
@@ -26,40 +56,59 @@ export default{
         if(!User.loggedIn()){
             this.$router.push({name:'/'})
         }
+        
+     
     },
     data(){ 
        return{
-        form:{
-            name:null,
-            email:null,
-            password:null,
-            password_confirmation:null
-        }
+        employees:[],
+        searchTerm : ''
        }
     },
+    computed:{
+        searchData(){
+           return this.employees.filter(employee=>{return employee.number.match(this.searchTerm)||employee.name.match(this.searchTerm)})
+        }
+    },
+    mounted(){
+        this.allEmployee()
+    },
     methods:{
-        signup(){
-            axios.post('/api/auth/signup',this.form)
-            .then(res=>{
-                User.responseAfterLogin(res)
-                Toast.fire({
-                    type: 'success',
-                    text: 'Successfully registered!!',
-                    confirmButtonText: 'Cool'
-                    })
-                this.$router.push({name:'home'})
-            })
-            //.then(res=>console.log(res.data))
-            //.catch(error=>console.log(error.response.data))
-            .catch(error=>{
-                Toast.fire({
-                    type: 'warning',
-                    text: error.response.data.error,
-                    icon: 'error',
-                    confirmButtonText: 'Cool'
-                    })
-            })
+        allEmployee(){
+            axios.get('/api/employee')
+            .then(({data})=>{this.employees = data; console.log(data)})
+            .catch()
+            
+        },
+        deleteEmployee(id){
+            Swal.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        console.log(result)
+    if (result.value) {
+        axios.delete('/api/employee/'+id)
+        .then(()=>{this.employees = this.employees.filter(employee=>{return employee.id!=id})})
+        .catch( this.$router.push({name:'allemployee'}))
+        Swal.fire(
+        'Deleted!',
+        'Your file has been deleted.',
+        'success'
+        )
+    }
+    })
         }
     }
 }
 </script>
+<style scoped>
+img{
+    width: 50px;
+    border-radius: 50%;
+}
+</style>

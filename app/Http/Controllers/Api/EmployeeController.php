@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\EmployeeModel;
+use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Image;
@@ -48,10 +48,10 @@ class EmployeeController extends Controller
                       $image_url=$upload_path.$name;
                       $img->save($image_url);
    
-                      $employee = new EmployeeModel;
+                      $employee = new Employee;
                       $employee->name = $request->name;
                       $employee->email = $request->email;
-                      $employee->phone = $request->number;
+                      $employee->number = $request->number;
                       $employee->address = $request->address;
                       $employee->salary = $request->salary;
                       $employee->nid = $request->nid;
@@ -59,10 +59,10 @@ class EmployeeController extends Controller
                       $employee->photo =  $image_url;
                       $employee->save();
                }else{
-                      $employee = new EmployeeModel;
+                      $employee = new Employee;
                       $employee->name = $request->name;
                       $employee->email = $request->email;
-                      $employee->phone = $request->number;
+                      $employee->number = $request->number;
                       $employee->address = $request->address;
                       $employee->salary = $request->salary;
                       $employee->nid = $request->nid;
@@ -103,5 +103,13 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         //
+        $employee =  DB::table('employees')->where('id',$id)->first();
+        if($employee->photo){
+            DB::table('employees')->where('id',$id)->delete();
+            unlink($employee->photo);
+        }else{
+            DB::table('employees')->where('id',$id)->delete();
+        }
+        
     }
 }
