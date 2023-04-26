@@ -65,7 +65,12 @@
                     <span>Employee</span>
                 </router-link>
             </li>
-
+            <li class="nav-item">
+                <router-link class="nav-link" to="supplier">
+                <i class="fa fa-user"></i>
+                    <span>Supplier</span>
+                </router-link>
+            </li>
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"

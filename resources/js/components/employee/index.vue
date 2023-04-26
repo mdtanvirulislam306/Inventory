@@ -25,6 +25,7 @@
                                                 <th>Number</th>
                                                 <th>Address</th>
                                                 <th>NID</th>
+                                                <th>Salary</th>
                                                 <th>Joining Date</th>
                                                 <th>Action</th>
                                             </tr>
@@ -37,6 +38,7 @@
                                                 <td>{{ employee.number }}</td>
                                                 <td>{{ employee.address }}</td>
                                                 <td>{{ employee.nid }}</td>
+                                                <td>{{ employee.salary }}</td>
                                                 <td>{{ employee.joining_date }}</td>
                                                 <td>
                                                     <router-link :to="{name:'editEmployee',params:{id:employee.id}}" class="btn btn-info" >Edit</router-link>
