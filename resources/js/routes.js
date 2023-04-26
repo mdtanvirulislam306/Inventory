@@ -11,7 +11,7 @@ let editEmployee = require('./components/employee/editEmployee.vue').default;
 //Supplier Component
 let allSupplier = require('./components/supplier/index.vue').default;
 let addSupplier = require('./components/supplier/addSupplier.vue').default;
-
+let editSupplier = require('./components/supplier/editSupplier.vue').default;
 export const routes = [
     { path: '/', component: login, name:'/' },
     { path: '/register', component: register, name:'register' },
@@ -27,6 +27,6 @@ export const routes = [
     // Supplier route
     { path: '/supplier', component: allSupplier, name:'allsupplier' },
     { path: '/add-supplier', component: addSupplier, name:'addsupplier' },
-
+    { path: '/edit-supplier/:id', component: editSupplier, name:'editSupplier' },
 
   ]
