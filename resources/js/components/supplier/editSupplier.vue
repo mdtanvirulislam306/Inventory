@@ -49,7 +49,8 @@
                                 <input type="file" class="form-control" @change="onFileSelected">
                             </div>
                             <div class="col-sm-2 mb-3 mb-sm-0">
-                                <img :src="form.photo" class="img-thumbnail" style="width: 200px;height: 200;">
+                                <img v-if="this.imgChange" :src="this.form.newPhoto" class="img-thumbnail" style="width: 200px;height: 200;">
+                                <img v-else :src="this.baseUrl+form.photo" class="img-thumbnail" style="width: 200px;height: 200;">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -68,6 +69,8 @@
         </div>
 </template>
 <script>
+import { baseUrl } from '../../app';
+
 export default{
     created(){
         if(!User.loggedIn()){
@@ -78,7 +81,7 @@ export default{
         let id = this.$route.params.id
         
             axios.get('/api/supplier/'+id)
-            .then(({data})=>{this.form=data;console.log(data)})
+            .then(({data})=>{this.form=data})
             .catch(error=>{
                 Toast.fire({
                     type: 'warning',
@@ -90,6 +93,7 @@ export default{
     },
     data(){ 
        return{
+        baseUrl: baseUrl,
         form:{
             name:'',
             email:'',
@@ -99,7 +103,8 @@ export default{
             newPhoto:'',
             nid:'',
             shop_name:''
-        }
+        },
+        imgChange:false
        }
     },
     methods:{
@@ -140,7 +145,8 @@ export default{
                 let reader = new FileReader();
                 reader.onload = e=>{
                     this.form.newPhoto = e.target.result
-                    console.log(e.target.result)
+                    this.imgChange = true
+                    console.log(this.form.newPhoto)
                 }
                 reader.readAsDataURL(file)
             }

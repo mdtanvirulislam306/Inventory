@@ -81,7 +81,8 @@ class SupplierController extends Controller
      */
     public function show($id)
     {
-        //
+        $supplier = DB::table('suppliers')->where('id',$id)->first();
+        return response()->json($supplier);
     }
 
     /**
@@ -92,9 +93,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        //
-        $supplier = DB::table('suppliers')->where('id',$id)->first();
-        return response()->json($supplier);
+        
     }
 
     /**
@@ -148,6 +147,12 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $supplier =  DB::table('suppliers')->where('id',$id)->first();
+        if($supplier->photo){
+            DB::table('suppliers')->where('id',$id)->delete();
+            unlink($supplier->photo);
+        }else{
+            DB::table('suppliers')->where('id',$id)->delete();
+        }
     }
 }

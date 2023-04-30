@@ -94,9 +94,9 @@ export default{
                 }).then((result) => {
                     console.log(result)
                 if (result.value) {
-                    axios.delete('/api/employee/'+id)
-                    .then(()=>{this.employees = this.employees.filter(employee=>{return employee.id!=id})})
-                    .catch( this.$router.push({name:'allemployee'}))
+                    axios.delete('/api/supplier/'+id)
+                    .then(()=>{this.suppliers = this.suppliers.filter(supplier=>{return supplier.id!=id})})
+                    .catch( this.$router.push({name:'allsupplier'}))
                     Swal.fire(
                     'Deleted!',
                     'Your file has been deleted.',

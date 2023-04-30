@@ -26,7 +26,7 @@ const Toast = Swal.mixin({
 window.Toast = Toast
 Vue.use(VueRouter)
 
-
+export const baseUrl = 'http://127.0.0.1:8000/'
 import { routes } from './routes';
 const router = new VueRouter({
     routes, // short for `routes: routes`
