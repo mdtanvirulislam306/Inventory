@@ -73,7 +73,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = DB::table('categories')->where('id',$id)->first();
+        return response()->json($category);
     }
 
     /**
@@ -96,7 +97,32 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = array();
+        $data['name'] = $request->name;
+    if($request->newPhoto){
+        $position = strpos($request->newPhoto,';');
+        $sub      = substr($request->newPhoto,0,$position);
+        $ext      = explode('/',$sub)[1];
+        $name     = time().".".$ext;
+        $img      = Image::make($request->newPhoto)->resize(240,200);
+        $upload_path = 'backend/category/';
+        $image_url   = $upload_path.$name;
+        $save        = $img->save($image_url);
+    if($save){
+        $data['image'] = $image_url;
+        $img = DB::table('categories')->where('id',$id)->first();
+        $img_path = $img->image;
+        if($img_path){
+            unlink($img_path);
+        }
+        $category = DB::table('categories')->where('id',$id)->update($data);
+        }
+    }else{
+        $oldImg = $request->photo;
+        $data['image'] =  $oldImg;
+        $user = DB::table('categories')->where('id',$id)->update($data);
+    }
+
     }
 
     /**

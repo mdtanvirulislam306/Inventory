@@ -5475,8 +5475,10 @@ __webpack_require__.r(__webpack_exports__);
     return {
       form: {
         name: '',
-        photo: ''
+        photo: '',
+        newPhoto: ''
       },
+      category_update: false,
       categories: [],
       searchTerm: ''
     };
@@ -5518,8 +5520,30 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    onFileSelected: function onFileSelected(e) {
+    updateCategory: function updateCategory(id) {
       var _this3 = this;
+      axios.patch('/api/category/' + id, this.form).then(function (res) {
+        _this3.allCategory();
+        Toast.fire({
+          type: 'success',
+          text: 'Category successfully updated',
+          icon: 'success',
+          confirmButtonText: 'Cool'
+        });
+      })
+      //.then(res=>console.log(res.data))
+      //.catch(error=>console.log(error.response.data))
+      ["catch"](function (error) {
+        Toast.fire({
+          type: 'warning',
+          text: error.response.data.error,
+          icon: 'error',
+          confirmButtonText: 'Cool'
+        });
+      });
+    },
+    onFileSelected: function onFileSelected(e) {
+      var _this4 = this;
       var file = e.target.files[0];
       if (file.size > 1048785) {
         Toast.fire({
@@ -5530,23 +5554,27 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         var reader = new FileReader();
         reader.onload = function (e) {
-          _this3.form.photo = e.target.result;
-          console.log(e.target.result);
+          if (_this4.category_update) {
+            _this4.form.newPhoto = e.target.result;
+          } else {
+            _this4.form.photo = e.target.result;
+          }
+          console.log(_this4.form.newPhoto);
         };
         reader.readAsDataURL(file);
       }
       console.log(e.target.files[0].name);
     },
     allCategory: function allCategory() {
-      var _this4 = this;
+      var _this5 = this;
       axios.get('/api/category').then(function (_ref) {
         var data = _ref.data;
-        _this4.categories = data;
+        _this5.categories = data;
         console.log(data);
       })["catch"]();
     },
     deleteCategory: function deleteCategory(id) {
-      var _this5 = this;
+      var _this6 = this;
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -5559,15 +5587,35 @@ __webpack_require__.r(__webpack_exports__);
         console.log(result);
         if (result.value) {
           axios["delete"]('/api/category/' + id).then(function () {
-            _this5.categories = _this5.categories.filter(function (category) {
+            _this6.categories = _this6.categories.filter(function (category) {
               return category.id != id;
             });
-          })["catch"](_this5.$router.push({
+          })["catch"](_this6.$router.push({
             name: 'allcategory'
           }));
           Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
         }
       });
+    },
+    editCategory: function editCategory(id) {
+      var _this7 = this;
+      this.category_update = true;
+      axios.get('/api/category/' + id).then(function (_ref2) {
+        var data = _ref2.data;
+        _this7.form = data;
+      })["catch"](function (error) {
+        Toast.fire({
+          type: 'warning',
+          text: error.response.data.error,
+          icon: 'error',
+          confirmButtonText: 'Cool'
+        });
+      });
+    },
+    editToAdd: function editToAdd() {
+      this.category_update = false;
+      this.form.name = '';
+      this.form.photo = '';
     }
   }
 });
@@ -6554,7 +6602,7 @@ var render = function render() {
     staticClass: "container-fluid"
   }, [_c("div", {
     staticClass: "col-lg-12"
-  }, [_c("div", {
+  }, [!_vm.category_update ? _c("div", {
     staticClass: "card shadow mb-4"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "card-body py-3 d-flex flex-row align-items-center justify-content-between"
@@ -6600,9 +6648,66 @@ var render = function render() {
     on: {
       change: _vm.onFileSelected
     }
-  })]), _vm._v(" "), _vm._m(1)])])])]), _vm._v(" "), _c("div", {
+  })]), _vm._v(" "), _vm._m(1)])])])]) : _c("div", {
     staticClass: "card shadow mb-4"
   }, [_vm._m(2), _vm._v(" "), _c("div", {
+    staticClass: "card-body py-3 d-flex flex-row align-items-center justify-content-between"
+  }, [_c("form", {
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.addCategory.apply(null, arguments);
+      }
+    }
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.form.name,
+      expression: "form.name"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Name"
+    },
+    domProps: {
+      value: _vm.form.name
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.form, "name", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
+  }, [_c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "file"
+    },
+    on: {
+      change: _vm.onFileSelected
+    }
+  })]), _vm._v(" "), _vm._m(3)])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card shadow mb-4"
+  }, [_c("div", {
+    staticClass: "card-header py-3 d-flex flex-row align-items-center justify-content-between"
+  }, [_c("h6", {
+    staticClass: "m-0 font-weight-bold text-primary"
+  }, [_vm._v("All Category")]), _vm._v(" "), _c("div", {
+    staticClass: "dropdown no-arrow"
+  }, [_vm.category_update ? _c("button", {
+    staticClass: "btn btn-primary",
+    on: {
+      click: _vm.editToAdd
+    }
+  }, [_vm._v("\n                                        Add Category\n                                    ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("label", {
     attrs: {
@@ -6629,7 +6734,7 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("table", {
     staticClass: "table"
-  }, [_vm._m(3), _vm._v(" "), _c("tbody", _vm._l(_vm.searchData, function (category) {
+  }, [_vm._m(4), _vm._v(" "), _c("tbody", _vm._l(_vm.searchData, function (category) {
     return _c("tr", {
       key: category.id
     }, [_c("td", [_c("img", {
@@ -6637,13 +6742,10 @@ var render = function render() {
         src: category.image,
         alt: "category photo"
       }
-    })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at))]), _vm._v(" "), _c("td", [_c("router-link", {
-      attrs: {
-        to: {
-          name: "editSupplier",
-          params: {
-            id: category.id
-          }
+    })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at))]), _vm._v(" "), _c("td", [_c("a", {
+      on: {
+        click: function click($event) {
+          return _vm.editCategory(category.id);
         }
       }
     }, [_c("i", {
@@ -6656,7 +6758,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "fa fa-trash"
-    })])], 1)]);
+    })])])]);
   }), 0)])])])])]);
 };
 var staticRenderFns = [function () {
@@ -6679,10 +6781,18 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "card-header py-3 d-flex flex-row align-items-center justify-content-between"
+    staticClass: "card-header"
   }, [_c("h6", {
     staticClass: "m-0 font-weight-bold text-primary"
-  }, [_vm._v("All Category")])]);
+  }, [_vm._v("update Category")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "col-sm-4 mb-3 mb-sm-0"
+  }, [_c("button", {
+    staticClass: "btn btn-primary"
+  }, [_vm._v("\n                        Update Category\n                    ")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
