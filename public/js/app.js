@@ -5496,6 +5496,7 @@ __webpack_require__.r(__webpack_exports__);
     addCategory: function addCategory() {
       var _this2 = this;
       axios.post('/api/category', this.form).then(function (res) {
+        _this2.allCategory();
         _this2.$router.push({
           name: 'allcategory'
         });
@@ -5518,6 +5519,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     onFileSelected: function onFileSelected(e) {
+      var _this3 = this;
       var file = e.target.files[0];
       if (file.size > 1048785) {
         Toast.fire({
@@ -5525,19 +5527,26 @@ __webpack_require__.r(__webpack_exports__);
           text: 'File size must be less than 1MB',
           confirmButtonText: 'Cool'
         });
+      } else {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          _this3.form.photo = e.target.result;
+          console.log(e.target.result);
+        };
+        reader.readAsDataURL(file);
       }
       console.log(e.target.files[0].name);
     },
     allCategory: function allCategory() {
-      var _this3 = this;
+      var _this4 = this;
       axios.get('/api/category').then(function (_ref) {
         var data = _ref.data;
-        _this3.categories = data;
+        _this4.categories = data;
         console.log(data);
       })["catch"]();
     },
-    deleteSupplier: function deleteSupplier(id) {
-      var _this4 = this;
+    deleteCategory: function deleteCategory(id) {
+      var _this5 = this;
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -5549,12 +5558,12 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         console.log(result);
         if (result.value) {
-          axios["delete"]('/api/supplier/' + id).then(function () {
-            _this4.suppliers = _this4.suppliers.filter(function (supplier) {
-              return supplier.id != id;
+          axios["delete"]('/api/category/' + id).then(function () {
+            _this5.categories = _this5.categories.filter(function (category) {
+              return category.id != id;
             });
-          })["catch"](_this4.$router.push({
-            name: 'allsupplier'
+          })["catch"](_this5.$router.push({
+            name: 'allcategory'
           }));
           Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
         }
@@ -6625,10 +6634,10 @@ var render = function render() {
       key: category.id
     }, [_c("td", [_c("img", {
       attrs: {
-        src: category.photo,
+        src: category.image,
         alt: "category photo"
       }
-    })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at.toTimeString()))]), _vm._v(" "), _c("td", [_c("router-link", {
+    })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at))]), _vm._v(" "), _c("td", [_c("router-link", {
       attrs: {
         to: {
           name: "editSupplier",
@@ -6642,7 +6651,7 @@ var render = function render() {
     })]), _vm._v(" "), _c("a", {
       on: {
         click: function click($event) {
-          return _vm.deleteSupplier(category.id);
+          return _vm.deleteCategory(category.id);
         }
       }
     }, [_c("i", {
@@ -8419,6 +8428,12 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   // short for `routes: routes`
   mode: 'history'
 });
+var originalPush = vue_router__WEBPACK_IMPORTED_MODULE_3__["default"].prototype.push;
+vue_router__WEBPACK_IMPORTED_MODULE_3__["default"].prototype.push = function push(location) {
+  return originalPush.call(this, location)["catch"](function (err) {
+    return err;
+  });
+};
 var app = new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
   el: '#app',
   router: router

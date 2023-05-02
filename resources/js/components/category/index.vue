@@ -48,13 +48,13 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="category in searchData" :key="category.id">
-                                                <td><img :src="category.photo" alt="category photo"></td>
+                                                <td><img :src="category.image" alt="category photo"></td>
                                                 <td>{{ category.name }}</td>
-                                                <td>{{ category.created_at.toTimeString() }}</td>
+                                                <td>{{ category.created_at }}</td>
                                                 <td>
                                                     <router-link :to="{name:'editSupplier',params:{id:category.id}}"><i class="fa fa-pen pr-2"></i></router-link>
                                                     
-                                                    <a @click="deleteSupplier(category.id)"><i class="fa fa-trash"></i></a>
+                                                    <a @click="deleteCategory(category.id)"><i class="fa fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -96,6 +96,7 @@ export default{
         addCategory(){
             axios.post('/api/category',this.form)
             .then(res=>{
+                this.allCategory()
                 this.$router.push({name:'allcategory'})
                 Toast.fire({
                     type: 'success',
@@ -124,6 +125,13 @@ export default{
                     text: 'File size must be less than 1MB',
                     confirmButtonText: 'Cool'
                     })
+            }else{
+                let reader = new FileReader();
+                reader.onload = e=>{
+                    this.form.photo = e.target.result
+                    console.log(e.target.result)
+                }
+                reader.readAsDataURL(file)
             }
             console.log(e.target.files[0].name);
         },
@@ -134,7 +142,7 @@ export default{
             
         },
 
-        deleteSupplier(id){
+        deleteCategory(id){
             Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -146,9 +154,9 @@ export default{
                 }).then((result) => {
                     console.log(result)
                 if (result.value) {
-                    axios.delete('/api/supplier/'+id)
-                    .then(()=>{this.suppliers = this.suppliers.filter(supplier=>{return supplier.id!=id})})
-                    .catch( this.$router.push({name:'allsupplier'}))
+                    axios.delete('/api/category/'+id)
+                    .then(()=>{this.categories = this.categories.filter(category=>{return category.id!=id})})
+                    .catch( this.$router.push({name:'allcategory'}))
                     Swal.fire(
                     'Deleted!',
                     'Your file has been deleted.',
