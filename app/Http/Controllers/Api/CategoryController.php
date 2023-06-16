@@ -99,7 +99,7 @@ class CategoryController extends Controller
     {
         $data = array();
         $data['name'] = $request->name;
-    if($request->newPhoto){
+    if($request->newPhoto!=''){
         $position = strpos($request->newPhoto,';');
         $sub      = substr($request->newPhoto,0,$position);
         $ext      = explode('/',$sub)[1];
@@ -108,6 +108,7 @@ class CategoryController extends Controller
         $upload_path = 'backend/category/';
         $image_url   = $upload_path.$name;
         $save        = $img->save($image_url);
+    }
     if($save){
         $data['image'] = $image_url;
         $img = DB::table('categories')->where('id',$id)->first();
@@ -115,13 +116,10 @@ class CategoryController extends Controller
         if($img_path){
             unlink($img_path);
         }
-        $category = DB::table('categories')->where('id',$id)->update($data);
-        }
-    }else{
-        $oldImg = $request->photo;
-        $data['image'] =  $oldImg;
-        $user = DB::table('categories')->where('id',$id)->update($data);
     }
+        $category = DB::table('categories')->where('id',$id)->update($data);
+        
+    
 
     }
 

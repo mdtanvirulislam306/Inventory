@@ -35,7 +35,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">update Category</h6>
                     </div>
                     <div class="card-body py-3 d-flex flex-row align-items-center justify-content-between">
-                        <form class="" @submit.prevent="addCategory">
+                        <form class="" @submit.prevent="updateCategory(form.id)">
                         <div class="form-group row">
                             <div class="col-sm-4 mb-3 mb-sm-0">
                                 <input type="text" class="form-control" 
@@ -77,7 +77,6 @@
                                             <tr>
                                                 <th>Image</th>
                                                 <th>Name</th>
-                                                <th>Created_at</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -85,7 +84,6 @@
                                             <tr v-for="category in searchData" :key="category.id">
                                                 <td><img :src="category.image" alt="category photo"></td>
                                                 <td>{{ category.name }}</td>
-                                                <td>{{ category.created_at }}</td>
                                                 <td>
                                                     <a @click="editCategory(category.id)"><i class="fa fa-pen pr-2"></i></a>
                                                     
@@ -154,7 +152,30 @@ export default{
                     })
             })
         },
+        editCategory(id){
+            this.category_update = true
+            
+            axios.get('/api/category/'+id)
+            .then(({data})=>{this.form=data})
+            .catch(error=>{
+                Toast.fire({
+                    type: 'warning',
+                    text: error.response.data.error,
+                    icon: 'error',
+                    confirmButtonText: 'Cool'
+                    })
+            })
+            },
+            editToAdd(){
+            this.category_update = false
+            },
+            form_empty(){
+               this.form.id='', 
+               this.form.name='', 
+               this.form.photo=''
+            },
         updateCategory(id){
+            this.editToAdd()
             axios.patch('/api/category/'+id,this.form)
             .then(res=>{
                 this.allCategory()
@@ -164,14 +185,16 @@ export default{
                     icon: 'success',
                     confirmButtonText: 'Cool'
                     })
+                    this.form_empty()
                 
             })
             //.then(res=>console.log(res.data))
             //.catch(error=>console.log(error.response.data))
             .catch(error=>{
+                console.log(error)
                 Toast.fire({
                     type: 'warning',
-                    text: error.response.data.error,
+                    text: error,
                     icon: 'error',
                     confirmButtonText: 'Cool'
                     })
@@ -229,26 +252,8 @@ export default{
                     )
                     }
                     })
-                },
-        editCategory(id){
-            this.category_update = true
-            
-            axios.get('/api/category/'+id)
-            .then(({data})=>{this.form=data})
-            .catch(error=>{
-                Toast.fire({
-                    type: 'warning',
-                    text: error.response.data.error,
-                    icon: 'error',
-                    confirmButtonText: 'Cool'
-                    })
-            })
-            },
-            editToAdd(){
-            this.category_update = false
-            this.form.name = ''
-            this.form.photo = ''
-            }
+                }
+        
     }
 }
 </script>

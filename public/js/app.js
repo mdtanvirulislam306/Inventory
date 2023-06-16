@@ -5520,20 +5520,13 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    updateCategory: function updateCategory(id) {
+    editCategory: function editCategory(id) {
       var _this3 = this;
-      axios.patch('/api/category/' + id, this.form).then(function (res) {
-        _this3.allCategory();
-        Toast.fire({
-          type: 'success',
-          text: 'Category successfully updated',
-          icon: 'success',
-          confirmButtonText: 'Cool'
-        });
-      })
-      //.then(res=>console.log(res.data))
-      //.catch(error=>console.log(error.response.data))
-      ["catch"](function (error) {
+      this.category_update = true;
+      axios.get('/api/category/' + id).then(function (_ref) {
+        var data = _ref.data;
+        _this3.form = data;
+      })["catch"](function (error) {
         Toast.fire({
           type: 'warning',
           text: error.response.data.error,
@@ -5542,8 +5535,39 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    onFileSelected: function onFileSelected(e) {
+    editToAdd: function editToAdd() {
+      this.category_update = false;
+    },
+    form_empty: function form_empty() {
+      this.form.id = '', this.form.name = '', this.form.photo = '';
+    },
+    updateCategory: function updateCategory(id) {
       var _this4 = this;
+      this.editToAdd();
+      axios.patch('/api/category/' + id, this.form).then(function (res) {
+        _this4.allCategory();
+        Toast.fire({
+          type: 'success',
+          text: 'Category successfully updated',
+          icon: 'success',
+          confirmButtonText: 'Cool'
+        });
+        _this4.form_empty();
+      })
+      //.then(res=>console.log(res.data))
+      //.catch(error=>console.log(error.response.data))
+      ["catch"](function (error) {
+        console.log(error);
+        Toast.fire({
+          type: 'warning',
+          text: error,
+          icon: 'error',
+          confirmButtonText: 'Cool'
+        });
+      });
+    },
+    onFileSelected: function onFileSelected(e) {
+      var _this5 = this;
       var file = e.target.files[0];
       if (file.size > 1048785) {
         Toast.fire({
@@ -5554,27 +5578,27 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         var reader = new FileReader();
         reader.onload = function (e) {
-          if (_this4.category_update) {
-            _this4.form.newPhoto = e.target.result;
+          if (_this5.category_update) {
+            _this5.form.newPhoto = e.target.result;
           } else {
-            _this4.form.photo = e.target.result;
+            _this5.form.photo = e.target.result;
           }
-          console.log(_this4.form.newPhoto);
+          console.log(_this5.form.newPhoto);
         };
         reader.readAsDataURL(file);
       }
       console.log(e.target.files[0].name);
     },
     allCategory: function allCategory() {
-      var _this5 = this;
-      axios.get('/api/category').then(function (_ref) {
-        var data = _ref.data;
-        _this5.categories = data;
+      var _this6 = this;
+      axios.get('/api/category').then(function (_ref2) {
+        var data = _ref2.data;
+        _this6.categories = data;
         console.log(data);
       })["catch"]();
     },
     deleteCategory: function deleteCategory(id) {
-      var _this6 = this;
+      var _this7 = this;
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -5587,35 +5611,15 @@ __webpack_require__.r(__webpack_exports__);
         console.log(result);
         if (result.value) {
           axios["delete"]('/api/category/' + id).then(function () {
-            _this6.categories = _this6.categories.filter(function (category) {
+            _this7.categories = _this7.categories.filter(function (category) {
               return category.id != id;
             });
-          })["catch"](_this6.$router.push({
+          })["catch"](_this7.$router.push({
             name: 'allcategory'
           }));
           Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
         }
       });
-    },
-    editCategory: function editCategory(id) {
-      var _this7 = this;
-      this.category_update = true;
-      axios.get('/api/category/' + id).then(function (_ref2) {
-        var data = _ref2.data;
-        _this7.form = data;
-      })["catch"](function (error) {
-        Toast.fire({
-          type: 'warning',
-          text: error.response.data.error,
-          icon: 'error',
-          confirmButtonText: 'Cool'
-        });
-      });
-    },
-    editToAdd: function editToAdd() {
-      this.category_update = false;
-      this.form.name = '';
-      this.form.photo = '';
     }
   }
 });
@@ -6656,7 +6660,7 @@ var render = function render() {
     on: {
       submit: function submit($event) {
         $event.preventDefault();
-        return _vm.addCategory.apply(null, arguments);
+        return _vm.updateCategory(_vm.form.id);
       }
     }
   }, [_c("div", {
@@ -6742,7 +6746,7 @@ var render = function render() {
         src: category.image,
         alt: "category photo"
       }
-    })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at))]), _vm._v(" "), _c("td", [_c("a", {
+    })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.name))]), _vm._v(" "), _c("td", [_c("a", {
       on: {
         click: function click($event) {
           return _vm.editCategory(category.id);
@@ -6796,7 +6800,7 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("thead", [_c("tr", [_c("th", [_vm._v("Image")]), _vm._v(" "), _c("th", [_vm._v("Name")]), _vm._v(" "), _c("th", [_vm._v("Created_at")]), _vm._v(" "), _c("th", [_vm._v("Action")])])]);
+  return _c("thead", [_c("tr", [_c("th", [_vm._v("Image")]), _vm._v(" "), _c("th", [_vm._v("Name")]), _vm._v(" "), _c("th", [_vm._v("Action")])])]);
 }];
 render._withStripped = true;
 
@@ -7365,7 +7369,6 @@ var render = function render() {
         alt: "employee photo"
       }
     })]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.email))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.number))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.address))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.nid))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.salary))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(employee.joining_date))]), _vm._v(" "), _c("td", [_c("router-link", {
-      staticClass: "btn btn-info",
       attrs: {
         to: {
           name: "editEmployee",
@@ -7374,14 +7377,17 @@ var render = function render() {
           }
         }
       }
-    }, [_vm._v("Edit")]), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-danger",
+    }, [_c("i", {
+      staticClass: "fa fa-pen pr-2"
+    })]), _vm._v(" "), _c("a", {
       on: {
         click: function click($event) {
           return _vm.deleteEmployee(employee.id);
         }
       }
-    }, [_vm._v("Delete")])], 1)]);
+    }, [_c("i", {
+      staticClass: "fa fa-trash"
+    })])], 1)]);
   }), 0)])])])])]);
 };
 var staticRenderFns = [function () {
