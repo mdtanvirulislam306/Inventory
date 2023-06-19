@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\Models\Brand;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Image;
 use DB;
-class CategoryController extends Controller
+class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return response()->json($categories);
+        $brands = Brand::all();
+        return response()->json($brands);
     }
 
     /**
@@ -50,18 +49,18 @@ class CategoryController extends Controller
             $ext=explode('/', $sub)[1];
             $name=time().".".$ext;
             $img=Image::make($request->photo)->resize(240,200);
-            $upload_path='backend/category/';
+            $upload_path='backend/brand/';
             $image_url=$upload_path.$name;
             $img->save($image_url);
 
-            $category = new Category;
-            $category->name = $request->name;
-            $category->image =  $image_url;
-            $category->save();
+            $brand = new Brand;
+            $brand->name = $request->name;
+            $brand->image =  $image_url;
+            $brand->save();
      }else{
-            $category = new Category;
-            $category->name = $request->name;
-            $category->save();
+            $brand = new Brand;
+            $brand->name = $request->name;
+            $brand->save();
      }
     }
 
@@ -73,8 +72,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = DB::table('categories')->where('id',$id)->first();
-        return response()->json($category);
+        $brand = DB::table('brands')->where('id',$id)->first();
+        return response()->json($brand);
     }
 
     /**
@@ -105,19 +104,19 @@ class CategoryController extends Controller
         $ext      = explode('/',$sub)[1];
         $name     = time().".".$ext;
         $img      = Image::make($request->newPhoto)->resize(240,200);
-        $upload_path = 'backend/category/';
+        $upload_path = 'backend/brand/';
         $image_url   = $upload_path.$name;
         $save        = $img->save($image_url);
     }
     if($save){
         $data['image'] = $image_url;
-        $img = DB::table('categories')->where('id',$id)->first();
+        $img = DB::table('brands')->where('id',$id)->first();
         $img_path = $img->image;
         if($img_path){
             unlink($img_path);
         }
     }
-        $category = DB::table('categories')->where('id',$id)->update($data);
+        $brand = DB::table('brands')->where('id',$id)->update($data);
         
     
 
@@ -131,12 +130,12 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category =  DB::table('categories')->where('id',$id)->first();
+        $category =  DB::table('brands')->where('id',$id)->first();
         if($category->image){
-            DB::table('categories')->where('id',$id)->delete();
+            DB::table('brands')->where('id',$id)->delete();
             unlink($category->image);
         }else{
-            DB::table('categories')->where('id',$id)->delete();
+            DB::table('brands')->where('id',$id)->delete();
         }
     }
 }
