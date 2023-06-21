@@ -53,7 +53,7 @@ class SupplierController extends Controller
             $img->save($image_url);
 
             $supplier = new Supplier;
-            $supplier->name = $request->name;
+            $supplier->supplier_name = $request->name;
             $supplier->email = $request->email;
             $supplier->number = $request->number;
             $supplier->address = $request->address;

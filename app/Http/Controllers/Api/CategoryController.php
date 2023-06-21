@@ -55,7 +55,7 @@ class CategoryController extends Controller
             $img->save($image_url);
 
             $category = new Category;
-            $category->name = $request->name;
+            $category->category_name = $request->name;
             $category->image =  $image_url;
             $category->save();
      }else{
@@ -98,7 +98,7 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $data = array();
-        $data['name'] = $request->name;
+        $data['category_name'] = $request->name;
     if($request->newPhoto){
         $position = strpos($request->newPhoto,';');
         $sub      = substr($request->newPhoto,0,$position);

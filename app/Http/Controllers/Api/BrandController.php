@@ -39,9 +39,7 @@ class BrandController extends Controller
     {
         //
          //
-         $validateData =  $request->validate([
-            'name'=>'required|max:255',
-        ]);
+        
 
         if($request->photo){
             $position = strpos($request->photo, ';');
@@ -54,12 +52,12 @@ class BrandController extends Controller
             $img->save($image_url);
 
             $brand = new Brand;
-            $brand->name = $request->name;
+            $brand->brand_name = $request->name;
             $brand->image =  $image_url;
             $brand->save();
      }else{
             $brand = new Brand;
-            $brand->name = $request->name;
+            $brand->brand_name = $request->name;
             $brand->save();
      }
     }

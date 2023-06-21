@@ -16,6 +16,9 @@ let editSupplier = require('./components/supplier/editSupplier.vue').default;
 let allCategory = require('./components/category/index.vue').default;
 //brand
 let allBrand = require('./components/brand/index.vue').default;
+//Product
+let allProduct = require('./components/product/index.vue').default;
+let addProduct = require('./components/product/addProduct.vue').default;
 export const routes = [
     { path: '/', component: login, name:'/' },
     { path: '/register', component: register, name:'register' },
@@ -38,4 +41,7 @@ export const routes = [
 
     //Brand
     { path: '/brand', component: allBrand, name:'allbrand' },
+    //Brand
+    { path: '/product', component: allProduct, name:'allproduct' },
+    { path: '/add-product', component: addProduct, name:'addproduct' },
   ]

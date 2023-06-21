@@ -77,7 +77,7 @@ export default{
     data(){ 
        return{
         form:{
-            name:null,
+            supplier_name:null,
             email:null,
             address:null,
             number:null,
