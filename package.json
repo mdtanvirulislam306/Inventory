@@ -26,6 +26,7 @@
     "dependencies": {
         "noty": "^3.2.0-beta",
         "sweetalert2": "^8.19.1",
+        "vue-content-loading": "^1.6.0",
         "vue-router": "^3.0.7"
     }
 }

@@ -41,7 +41,8 @@
                                                 <td>{{ product.brand_name }}</td>
                                                 <td>{{ product.purchase_price }}</td>
                                                 <td>{{ product.selling_price }}</td>
-                                                <td>{{ product.qty }}</td>
+                                                <td v-if="product.qty==0"><span class="badge badge-danger">Stock out</span></td>
+                                                <td v-else>{{ product.qty }}</td>
                                                 <td>{{ product.purchase_date }}</td>
                                                 <td>{{ product.expair_date }}</td>
                                                 <td>
@@ -81,6 +82,12 @@ export default{
         this.allProducts()
     },
     methods:{
+        dateDiffernet(){
+            const date1 = new Date('7/13/2010');
+            const date2 = new Date('12/15/2010');
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            console.log(diffDays + " days");
+        },
         allProducts(){
             axios.get('/api/product')
             .then(({data})=>{this.products = data; console.log(data)})

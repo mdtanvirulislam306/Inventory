@@ -64,7 +64,7 @@
                             </div>
                             <div class="col-sm-4 mb-3 mb-sm-0">
                                 <label for="" class="form-label">Selling Date</label>
-                                <input type="date" class="form-control" v-model="form.selling_date">
+                                <input type="date" class="form-control" v-model="form.expair_date">
                             </div>
                         </div>
                         <div class="form-group row">

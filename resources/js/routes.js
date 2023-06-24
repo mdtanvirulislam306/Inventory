@@ -19,6 +19,9 @@ let allBrand = require('./components/brand/index.vue').default;
 //Product
 let allProduct = require('./components/product/index.vue').default;
 let addProduct = require('./components/product/addProduct.vue').default;
+
+//POS
+let pos =require('./components/pos/index.vue').default;
 export const routes = [
     { path: '/', component: login, name:'/' },
     { path: '/register', component: register, name:'register' },
@@ -44,4 +47,7 @@ export const routes = [
     //Brand
     { path: '/product', component: allProduct, name:'allproduct' },
     { path: '/add-product', component: addProduct, name:'addproduct' },
+
+    //POS
+    {path: '/pos',component:pos,name:pos},
   ]

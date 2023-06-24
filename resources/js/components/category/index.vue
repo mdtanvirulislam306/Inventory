@@ -83,7 +83,7 @@
                                         <tbody>
                                             <tr v-for="category in searchData" :key="category.id">
                                                 <td><img :src="category.image" alt="category photo"></td>
-                                                <td>{{ category.name }}</td>
+                                                <td>{{ category.category_name }}</td>
                                                 <td>
                                                     <a @click="editCategory(category.id)"><i class="fa fa-pen pr-2"></i></a>
                                                     
@@ -121,7 +121,7 @@ export default{
     },
     computed:{
         searchData(){
-           return this.categories.filter(category=>{return category.name.match(this.searchTerm)})
+           return this.categories.filter(category=>{return category.category_name.match(this.searchTerm)})
         }
     },
     mounted(){

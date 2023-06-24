@@ -39,7 +39,7 @@
                         <div class="form-group row">
                             <div class="col-sm-4 mb-3 mb-sm-0">
                                 <input type="text" class="form-control" 
-                                    placeholder="Name" v-model="form.name">
+                                    placeholder="Name" v-model="form.brand_name">
                             </div>
                             <div class="col-sm-4 mb-3 mb-sm-0">
                                 <input type="file" class="form-control" @change="onFileSelected">
@@ -83,7 +83,7 @@
                                         <tbody>
                                             <tr v-for="brand in searchData" :key="brand.id">
                                                 <td><img :src="brand.image" alt="brand photo"></td>
-                                                <td>{{ brand.name }}</td>
+                                                <td>{{ brand.brand_name }}</td>
                                                 <td>
                                                     <a @click="editBrand(brand.id)"><i class="fa fa-pen pr-2"></i></a>
                                                     
@@ -109,7 +109,7 @@ export default{
     data(){ 
        return{
         form:{
-            name:'',
+            brand_name:'',
             photo:'',
             newPhoto:''
         
@@ -121,7 +121,7 @@ export default{
     },
     computed:{
         searchData(){
-           return this.brands.filter(brand=>{return brand.name.match(this.searchTerm)})
+           return this.brands.filter(brand=>{return brand.brand_name.match(this.searchTerm)})
         }
     },
     mounted(){
